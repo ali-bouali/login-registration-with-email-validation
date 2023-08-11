@@ -36,6 +36,12 @@
 			<groupId>org.thymeleaf</groupId>
 			<version>3.0.11.RELEASE</version>
 		</dependency>
+
+		<dependency>
+			<groupId>ognl</groupId>
+			<artifactId>ognl</artifactId>
+			<version>3.2.21</version>
+		</dependency>
 		<dependency>
 			<artifactId>thymeleaf-layout-dialect</artifactId>
 			<groupId>nz.net.ultraq.thymeleaf</groupId>

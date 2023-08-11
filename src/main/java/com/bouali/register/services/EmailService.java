@@ -8,6 +8,7 @@ import javax.mail.internet.MimeMessage;
 import lombok.RequiredArgsConstructor;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
+import org.springframework.mail.javamail.MimeMessagePreparator;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
@@ -53,5 +54,24 @@ public class EmailService {
     helper.setText(template, true);
 
     mailSender.send(mimeMessage);
+  }
+
+  @Async
+  public void sendEmailWithTemplate(String to, String subject, Map<String, Object> templateModel) {
+
+    Context context = new Context();
+    context.setVariables(templateModel);
+    String content = templateEngine.process("confirm-email", context);
+
+    MimeMessagePreparator preparator = mimeMessage -> {
+      MimeMessageHelper helper = new MimeMessageHelper(mimeMessage);
+      helper.setFrom("noreply@example.com");
+      helper.setTo(to);
+      helper.setSubject(subject);
+      helper.setText(content, true);
+    };
+
+    mailSender.send(preparator);
+
   }
 }

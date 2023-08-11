@@ -7,6 +7,8 @@ import com.bouali.register.models.UserRole;
 import com.bouali.register.repositories.TokenRepository;
 import com.bouali.register.repositories.UserRepository;
 import java.time.LocalDateTime;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 import javax.mail.MessagingException;
 import javax.transaction.Transactional;
@@ -59,16 +61,16 @@ public class RegistrationService {
     tokenRepository.save(token);
 
     // Send the confirmation email
-    try {
-      emailService.send(
-          registrationDto.getEmail(),
-          registrationDto.getFirstname(),
-          null,
-          String.format(CONFIRMATION_URL, generatedToken)
+      Map<String, Object> templateModel = new HashMap<>();
+      var confirmUrl = String.format(CONFIRMATION_URL, generatedToken);
+      templateModel.put("username", registrationDto.getFirstname());
+      templateModel.put("confirmationUrl",  confirmUrl);
+      emailService.sendEmailWithTemplate(
+              savedUser.getEmail(),
+              "Confirmation Email",
+              templateModel
       );
-    } catch (MessagingException e) {
-      e.printStackTrace();
-    }
+
 
     // return success message
     return generatedToken;
